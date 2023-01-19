@@ -267,6 +267,9 @@ public class WorkspaceGlobals implements WorkspaceGlobalsApi {
     // Add to the package definition for later.
     Package.Builder builder = PackageFactory.getContext(thread).pkgBuilder;
     List<String> patterns = Sequence.cast(toolchainLabels, String.class, "toolchain_labels");
+    for (String pattern : patterns) {
+        System.err.println(String.format("registerToolchain(%s)", pattern));
+    }
     builder.addRegisteredToolchains(parsePatterns(patterns, builder, thread));
   }
 

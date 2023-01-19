@@ -156,6 +156,8 @@ public final class BazelPyRuleClasses {
   public static final class PyBinaryBaseRule implements RuleDefinition {
     @Override
     public RuleClass build(RuleClass.Builder builder, final RuleDefinitionEnvironment env) {
+      System.err.println("DEBUG123 - here!");
+      //throw new java.lang.RuntimeException("ben debug");
       return builder
           /* <!-- #BLAZE_RULE($base_py_binary).ATTRIBUTE(main) -->
           The name of the source file that is the main entry point of the application.
