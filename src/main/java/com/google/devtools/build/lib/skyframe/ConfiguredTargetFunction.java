@@ -538,7 +538,7 @@ public final class ConfiguredTargetFunction implements SkyFunction {
 
     for (Label label : requiredDefaultToolchains) {
       if (label.toString().contains("cpp:toolchain")) {
-          new Exception(String.format("default required for %s", debugKey.toString())).printStackTrace();
+          new Exception(String.format("default required for %s\n    toolchain = %s", debugKey.toString(), label.toString())).printStackTrace();
       }
     }
     ToolchainContextKey.Builder toolchainContextKeyBuilder =
@@ -560,7 +560,7 @@ public final class ConfiguredTargetFunction implements SkyFunction {
       ExecGroup execGroup = execGroupCollectionBuilder.getExecGroup(name);
       for (Label label : execGroup.requiredToolchains()) {
         if (label.toString().contains("cpp:toolchain")) {
-            new Exception(String.format("execGroup required for %s", debugKey.toString())).printStackTrace();
+            new Exception(String.format("execGroup required for %s\n    toolchain = %s", debugKey.toString(), label.toString())).printStackTrace();
         }
       }
       toolchainContextKeys.put(
