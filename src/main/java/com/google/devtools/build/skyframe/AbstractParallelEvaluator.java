@@ -299,6 +299,10 @@ abstract class AbstractParallelEvaluator {
         throws InterruptedException {
       Preconditions.checkState(!entry.isDone(), "%s %s", skyKey, entry);
       DependencyState dependencyState;
+      if (child.toString().contains("cpp:toolchain")) {
+        new Exception(String.format("enqueueChild(\n    skyKey = %s\n    child = %s\n)\n",
+                    skyKey.toString(), child.toString())).printStackTrace();
+      }
       try {
         dependencyState =
             depAlreadyExists
