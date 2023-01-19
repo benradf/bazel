@@ -254,11 +254,11 @@ public class SingleToolchainResolutionFunction implements SkyFunction {
         System.err.println(String.format(
             String.join("\n",
                 "\033[1;36mSingleToolchainResolutionFunction.checkConstraints(",
-                "toolchainConstraints = %s",
-                "platformType = %s",
-                "platform = %s",
-                "toolchainTypeLabel = %s",
-                "toolchainLabel = %s",
+                "    toolchainConstraints = %s",
+                "    platformType = %s",
+                "    platform = %s",
+                "    toolchainTypeLabel = %s",
+                "    toolchainLabel = %s",
                 ")"
             ),
             toolchainConstraints.toString(),
