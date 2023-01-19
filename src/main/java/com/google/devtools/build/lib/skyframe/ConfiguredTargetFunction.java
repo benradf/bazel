@@ -274,7 +274,7 @@ public final class ConfiguredTargetFunction implements SkyFunction {
     try {
       // Determine what toolchains are needed by this target.
       ComputedToolchainContexts result =
-          computeUnloadedToolchainContexts(
+          computeUnloadedToolchainContexts(key,
               env, ruleClassProvider, ctgValue, configuredTargetKey.getExecutionPlatformLabel());
       if (env.valuesMissing()) {
         return null;
@@ -461,6 +461,7 @@ public final class ConfiguredTargetFunction implements SkyFunction {
   @VisibleForTesting
   @Nullable
   public static ComputedToolchainContexts computeUnloadedToolchainContexts(
+      SkyKey debugKey,
       Environment env,
       RuleClassProvider ruleClassProvider,
       TargetAndConfiguration targetAndConfig,
@@ -535,6 +536,11 @@ public final class ConfiguredTargetFunction implements SkyFunction {
             .getFragment(PlatformConfiguration.class)
             .debugToolchainResolution(targetAndConfig.getLabel());
 
+    for (Label label : requiredDefaultToolchains) {
+      if (label.toString().contains("cpp:toolchain")) {
+          new Exception(String.format("default required for %s", debugKey.toString())).printStackTrace();
+      }
+    }
     ToolchainContextKey.Builder toolchainContextKeyBuilder =
         ToolchainContextKey.key()
             .configurationKey(toolchainConfig)
@@ -552,6 +558,11 @@ public final class ConfiguredTargetFunction implements SkyFunction {
     toolchainContextKeys.put(targetUnloadedToolchainContext, toolchainContextKey);
     for (String name : execGroupCollectionBuilder.getExecGroupNames()) {
       ExecGroup execGroup = execGroupCollectionBuilder.getExecGroup(name);
+      for (Label label : execGroup.requiredToolchains()) {
+        if (label.toString().contains("cpp:toolchain")) {
+            new Exception(String.format("execGroup required for %s", debugKey.toString())).printStackTrace();
+        }
+      }
       toolchainContextKeys.put(
           name,
           ToolchainContextKey.key()
