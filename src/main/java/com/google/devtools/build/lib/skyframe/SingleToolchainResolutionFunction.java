@@ -56,7 +56,10 @@ public class SingleToolchainResolutionFunction implements SkyFunction {
       throws ToolchainResolutionFunctionException, InterruptedException {
     SingleToolchainResolutionKey key = (SingleToolchainResolutionKey) skyKey.argument();
 
-    new Exception(String.format("compute(%s)", skyKey.toString())).printStackTrace();
+    String keyString = skyKey.toString();
+    if (keyString.contains("cpp:toolchain")) {
+        new Exception(String.format("compute(%s)", keyString)).printStackTrace();
+    }
 
     // This call could be combined with the call below, but this SkyFunction is evaluated so rarely
     // it's not worth optimizing.
