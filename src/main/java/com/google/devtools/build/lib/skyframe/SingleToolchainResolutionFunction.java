@@ -250,22 +250,24 @@ public class SingleToolchainResolutionFunction implements SkyFunction {
       Label toolchainTypeLabel,
       Label toolchainLabel) {
 
-    System.err.println(String.format(
-        String.join("\n",
-            "\033[1;36mSingleToolchainResolutionFunction.checkConstraints(",
-            "toolchainConstraints = %s",
-            "platformType = %s",
-            "platform = %s",
-            "toolchainTypeLabel = %s",
-            "toolchainLabel = %s",
-            ")"
-        ),
-        toolchainConstraints.toString(),
-        platformType.toString(),
-        platform.toString(),
-        toolchainTypeLabel.toString(),
-        toolchainLabel.toString()
-    ));
+    if (toolchainTypeLabel.toString().contains("cpp:toolchain")) {
+        System.err.println(String.format(
+            String.join("\n",
+                "\033[1;36mSingleToolchainResolutionFunction.checkConstraints(",
+                "toolchainConstraints = %s",
+                "platformType = %s",
+                "platform = %s",
+                "toolchainTypeLabel = %s",
+                "toolchainLabel = %s",
+                ")"
+            ),
+            toolchainConstraints.toString(),
+            platformType.toString(),
+            platform.toString(),
+            toolchainTypeLabel.toString(),
+            toolchainLabel.toString()
+        ));
+    }
 
     // Check every constraint_setting in either the toolchain or the platform.
     ImmutableSet<ConstraintSettingInfo> mismatchSettings =
