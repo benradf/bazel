@@ -241,6 +241,9 @@ abstract class AbstractParallelEvaluator {
     private Evaluate(SkyKey skyKey, int evaluationPriority) {
       this.skyKey = skyKey;
       this.evaluationPriority = evaluationPriority;
+      if (skyKey.toString().contains("cpp:toolchain")) {
+        new Exception("constructing Evaluate").printStackTrace();
+      }
     }
 
     @Override
