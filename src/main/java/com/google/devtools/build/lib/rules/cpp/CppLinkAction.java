@@ -297,10 +297,10 @@ public final class CppLinkAction extends AbstractAction implements CommandAction
           getExecutionInfo(),
           getInputs(),
           getOutputs(),
-          () ->
+          () -> ResourceSet.merge(ResourceSet.createFromExecutionInfo(getExecutionInfo()),
               estimateResourceConsumptionLocal(
                   OS.getCurrent(),
-                  getLinkCommandLine().getLinkerInputArtifacts().memoizedFlattenAndGetSize()));
+                  getLinkCommandLine().getLinkerInputArtifacts().memoizedFlattenAndGetSize())));
     } catch (CommandLineExpansionException e) {
       String message =
           String.format(

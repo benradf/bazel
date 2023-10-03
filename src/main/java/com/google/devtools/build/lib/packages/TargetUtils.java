@@ -56,6 +56,7 @@ public final class TargetUtils {
         || tag.startsWith("supports-")
         || tag.startsWith("disable-")
         || tag.startsWith("cpu:")
+        || tag.startsWith("memory:")
         || tag.equals(ExecutionRequirements.LOCAL)
         || tag.equals(ExecutionRequirements.WORKER_KEY_MNEMONIC)
         || tag.startsWith("resources:");

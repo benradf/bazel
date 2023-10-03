@@ -1682,12 +1682,12 @@ public class CppCompileAction extends AbstractAction implements IncludeScannable
           /*mandatoryOutputs=*/ hasCoverageArtifact
               ? ImmutableSet.copyOf(getOutputs().asList().subList(1, getOutputs().size()))
               : null,
-          () ->
+          () -> ResourceSet.merge(ResourceSet.createFromExecutionInfo(getExecutionInfo()),
               estimateResourceConsumptionLocal(
                   enabledCppCompileResourcesEstimation(),
                   getMnemonic(),
                   OS.getCurrent(),
-                  inputs.memoizedFlattenAndGetSize()));
+                  inputs.memoizedFlattenAndGetSize())));
     } catch (CommandLineExpansionException e) {
       String message =
           String.format(

@@ -742,6 +742,11 @@ public class StarlarkActionFactory implements StarlarkActionFactoryApi {
       builder.setResources(
           new StarlarkActionResourceSetBuilder(
               (StarlarkCallable) resourceSetUnchecked, mnemonic, getSemantics()));
+    } else {
+      ResourceSet resourceSet = ResourceSet.createFromExecutionInfo(executionInfo);
+      if (resourceSet != ResourceSet.ZERO) {
+        builder.setResources(resourceSet);
+      }
     }
 
     // Always register the action

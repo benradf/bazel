@@ -148,6 +148,32 @@ public class ResourceSet implements ResourceSetOrBuilder {
     return new ResourceSet(memoryMb, cpuUsage, extraResourceUsage, localTestCount, workerKey);
   }
 
+  public static ResourceSet createFromExecutionInfo(ImmutableMap<String, String> executionInfo) {
+    double ram = 0.0, cpu = 0.0;
+    for (ImmutableMap.Entry<String, String> entry : executionInfo.entrySet()) {
+        String[] parts = entry.getKey().split(":", 2);
+        if (parts.length != 2) {
+            continue;
+        }
+        if (parts[0].equals("memory")) {
+            if (!parts[1].endsWith("M")) {
+                // We only support values in MiB, but require a suffix to avoid confusion.
+                throw new IllegalArgumentException("Expected memory value to end with 'M'");
+            }
+            ram = Integer.parseInt(parts[1].substring(0, parts[1].length() - 1));
+            if (ram < 0.0) {
+                throw new IllegalArgumentException("Expected memory value to be positive");
+            }
+        } else if (parts[0].equals("cpu")) {
+            cpu = Integer.parseInt(parts[1]);
+            if (cpu < 0.0) {
+                throw new IllegalArgumentException("Expected cpu value to be positive");
+            }
+        }
+    }
+    return createWithRamCpu(ram, cpu);
+  }
+
   /** Returns the amount of real memory (resident set size) used in MB. */
   public double getMemoryMb() {
     return memoryMb;
@@ -256,5 +282,23 @@ public class ResourceSet implements ResourceSetOrBuilder {
   @Override
   public ResourceSet buildResourceSet(OS os, int inputsSize) throws ExecException {
     return this;
+  }
+
+  /** Merge two ResourceSets, taking values from rhs only when lhs values are zero. */
+  public static ResourceSet merge(ResourceSet lhs, ResourceSet rhs) {
+    ImmutableMap.Builder<String, Float> extraResourceUsageMerged =
+        new ImmutableMap.Builder<String, Float>();
+    extraResourceUsageMerged.putAll(lhs.extraResourceUsage);
+    for (ImmutableMap.Entry<String, Float> rhsEntry : rhs.extraResourceUsage.entrySet()) {
+        if (!lhs.extraResourceUsage.containsKey(rhsEntry.getKey())) {
+            extraResourceUsageMerged.put(rhsEntry.getKey(), rhsEntry.getValue());
+        }
+    }
+    return new ResourceSet(
+        lhs.memoryMb != 0.0 ? lhs.memoryMb : rhs.memoryMb,
+        lhs.cpuUsage != 0.0 ? lhs.cpuUsage : rhs.cpuUsage,
+        extraResourceUsageMerged.build(),
+        lhs.localTestCount != 0 ? lhs.localTestCount : rhs.localTestCount,
+        lhs.workerKey != null ? lhs.workerKey : rhs.workerKey);
   }
 }
